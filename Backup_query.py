@@ -3,6 +3,8 @@ import subprocess
 from datetime import datetime, timedelta
 from pathlib import Path
 from dotenv import load_dotenv
+import logging
+
 
 
 load_dotenv()
@@ -12,12 +14,14 @@ world_name = os.getenv("MINECRAFT_WORLD_NAME")
 retantion_days = os.getenv("BACKUP_RETENTION_DAYS")
 imprtant_hour = os.getenv("IMPORTANT_BACKUP_HOUR")
 
+logger = logging.getLogger(__name__)
+
 def sosal ():
     """Проверка папки бэкапа на ее наличие """
     if os.makedirs(backup_dir, exist_ok=True):
-        return "Папка с бэкапами найдена"
+        logger.info( "Папка с бэкапами найдена")
     else:
-        return "Папка с бэкапами не найдена"
+        logger.info("Папка с бэкапами не найдена")
 
 def create_backup():
     """Создает бэкап мира."""
@@ -28,9 +32,9 @@ def create_backup():
         subprocess.run([
             "tar", "-czf", str(backup_path),str(world_path), "."
         ], check=True)
-        print(f"Бэкап создан: {backup_path}")
+        logger.info(f"Бэкап создан: {backup_path}")
     except subprocess.CalledProcessError as e:
-        print(f"Ошибка создания бэкапа: {e}")
+        logger.info(f"Ошибка создания бэкапа: {e}")
 
 def clean_old_backup():
     """Удаляет старые бэкапы, оставляя только важные."""
@@ -43,4 +47,4 @@ def clean_old_backup():
                 # Проверяем, что это не важный бэкап
                 if not (backup_time.hour == imprtant_hour and backup_time.date() == (now - timedelta(days=1)).date()):
                     os.remove(backup_file)
-                    print(f"Удален старый бэкап: {backup_file}")
+                    logger.info(f"Удален старый бэкап: {backup_file}")

@@ -9,10 +9,14 @@ from aiogram.types import Message
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import StatesGroup
 from aiogram import Router
+from logger_config import setup_logger
 
-from Backup_query import create_backup, clean_old_backups
-from Service_qury import restart_minecraft, get_players
-from Scheduler_query import scheduler
+from Backup_query import create_backup, clean_old_backup
+from Service_qury import restart_minecraft
+
+
+
+setup_logger()
 # Логирование
 logging.basicConfig(level=logging.INFO)
 
@@ -41,14 +45,7 @@ async def handle_restart(message: types.Message):
 #     players = get_players()
 #     await message.reply(f"Игроки на сервере:\n{players}")
 
-# Сшедулёр
-def start_scheduler():
-    """Запускает планировщика."""
-    scheduler.add_job(create_backup, 'cron', hour='*/3')  # Каждые 3 часа
-    scheduler.add_job(clean_old_backups, 'cron', hour=4, minute=0)  # Чистка бэкапов в 04:00
-    scheduler.start()
 
 
 if __name__ == "__main__":
-    start_scheduler()  # Запуск планировщика
     asyncio.run(dp.start_polling())
