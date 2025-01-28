@@ -9,12 +9,12 @@ def restart_minecraft():
         print("Minecraft перезапущен.")
     except subprocess.CalledProcessError as e:
         print(f"Ошибка перезапуска Minecraft: {e}")
-
-def get_players():
-    """Получает список игроков на сервере."""
-    try:
-        result = subprocess.run(["minecraft-rcon", "list"], capture_output=True, text=True, check=True)
-        return result.stdout.strip()
-    except subprocess.CalledProcessError as e:
-        print(f"Ошибка получения списка игроков: {e}")
-        return "Не удалось получить список игроков."
+#
+# def get_players():
+#     """Получает список игроков на сервере."""
+#     try:
+#         result = subprocess.run(["minecraft-rcon", "list"], capture_output=True, text=True, check=True)
+#         return result.stdout.strip()
+#     except subprocess.CalledProcessError as e:
+#         print(f"Ошибка получения списка игроков: {e}")
+#         return "Не удалось получить список игроков."
