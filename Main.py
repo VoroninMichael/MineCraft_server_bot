@@ -1,51 +1,38 @@
-import types
-from dotenv import load_dotenv
-import os
-import logging
 import asyncio
-
+import logging
+import os
 from aiogram import Bot, Dispatcher
 from aiogram.types import Message
-from aiogram.fsm.context import FSMContext
-from aiogram.fsm.state import StatesGroup
-from aiogram import Router
+from aiogram.filters import Command
+from dotenv import load_dotenv
 from logger_config import setup_logger
-
 from Backup_query import create_backup, clean_old_backup
 from Service_qury import restart_minecraft
 
-
-
-setup_logger()
 # Логирование
+setup_logger()
 logging.basicConfig(level=logging.INFO)
 
-# Инцилизация .env
+# Загрузка переменных окружения
 load_dotenv()
 bot = Bot(token=os.getenv("BOT_TOKEN"))
+dp = Dispatcher()
 
-# Определяем диспетчера
-dp = Dispatcher(bot)
-
-@dp.message_handler(commands=['backup'])
-async def handle_backup(message: types.Message):
-    """Создает бэкап."""
+# Обработчик команды /backup
+@dp.message(Command("backup"))
+async def handle_backup(message: Message):
     create_backup()
     await message.reply("Бэкап создан.")
 
-@dp.message_handler(commands=['restart'])
-async def handle_restart(message: types.Message):
-    """Перезапускает сервер"""
+# Обработчик команды /restart
+@dp.message(Command("restart"))
+async def handle_restart(message: Message):
     restart_minecraft()
     await message.reply("Сервер Minecraft перезапущен.")
 
-# @dp.message_handler(commands=['players'])
-# async def handle_players(message: types.Message):
-#     "Получение инфы сервера"
-#     players = get_players()
-#     await message.reply(f"Игроки на сервере:\n{players}")
-
-
+# Функция для запуска бота
+async def main():
+    await dp.start_polling(bot)
 
 if __name__ == "__main__":
-    asyncio.run(dp.start_polling())
+    asyncio.run(main())

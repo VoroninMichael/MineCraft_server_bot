@@ -3,9 +3,9 @@ import subprocess
 from datetime import datetime, timedelta
 from pathlib import Path
 from dotenv import load_dotenv
+
 import logging
-
-
+logger = logging.getLogger(__name__)
 
 load_dotenv()
 backup_dir =  os.getenv("BACKUP_DIR")
@@ -13,8 +13,6 @@ world_dir = os.getenv("MINECRAFT_WORLD_DIR")
 world_name = os.getenv("MINECRAFT_WORLD_NAME")
 retantion_days = os.getenv("BACKUP_RETENTION_DAYS")
 imprtant_hour = os.getenv("IMPORTANT_BACKUP_HOUR")
-
-logger = logging.getLogger(__name__)
 
 def sosal ():
     """Проверка папки бэкапа на ее наличие """
@@ -34,7 +32,7 @@ def create_backup():
         ], check=True)
         logger.info(f"Бэкап создан: {backup_path}")
     except subprocess.CalledProcessError as e:
-        logger.info(f"Ошибка создания бэкапа: {e}")
+        logger.error(f"Ошибка создания бэкапа: {e}")
 
 def clean_old_backup():
     """Удаляет старые бэкапы, оставляя только важные."""

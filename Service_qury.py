@@ -2,7 +2,6 @@ import subprocess
 import logging
 logger = logging.getLogger(__name__)
 
-
 MINECRAFT_SERVICE = "minecraft.service"
 
 def restart_minecraft():
@@ -11,8 +10,8 @@ def restart_minecraft():
         subprocess.run(["systemctl", "restart", MINECRAFT_SERVICE], check=True)
         logger.info("Minecraft перезапущен.")
     except subprocess.CalledProcessError as e:
-        logger.info(f"Ошибка перезапуска Minecraft: {e}")
-#
+        logger.error(f"Ошибка перезапуска Minecraft: {e}")
+
 # def get_players():
 #     """Получает список игроков на сервере."""
 #     try:
